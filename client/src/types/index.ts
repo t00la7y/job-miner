@@ -9,6 +9,7 @@ export interface Job {
   source: 'Adzuna' | 'Remotive' | 'JSearch';
   applied?: boolean;
   savedAt?: string;
+  image?: string;
   geminiData?: {
     jobTitle: string;
     company: string;
