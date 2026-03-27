@@ -13,15 +13,15 @@ const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = "Search job, title, company, or location...",
 }) => {
   return (
-    <div className="flex items-center w-full mb-6">
+    <div className="w-[calc(100%-2rem)]">
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full px-5 py-3 bg-white border border-gray-300 rounded-2xl 
+        className="w-full px-4 py-2 bg-[var(--bg-light)] border border-[var(--bg-light)] rounded-2xl 
                    text-lg shadow-sm 
-                   focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100 
+                   focus:outline-none focus:border-none focus:ring-1 focus:ring-[var(--accent)]
                    transition-all duration-200 placeholder:text-gray-400"
         aria-label="Search jobs"
       />

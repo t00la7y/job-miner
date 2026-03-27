@@ -1,3 +1,5 @@
+
+
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IJob extends Document {
@@ -16,6 +18,7 @@ export interface IJob extends Document {
     questions: string[];
     difficulty: string;
   };
+  image?: string | null;          
   savedAt: Date;
 }
 
@@ -26,10 +29,10 @@ const JobSchema: Schema = new Schema({
   description: { type: String, required: true },
   url: { type: String, required: true, unique: true },
   salary: { type: String, default: 'N/A' },
-  source: { 
-    type: String, 
-    enum: ['Adzuna', 'Remotive', 'JSearch'], 
-    required: true 
+  source: {
+    type: String,
+    enum: ['Adzuna', 'Remotive', 'JSearch'],
+    required: true
   },
   applied: { type: Boolean, default: false },
   interviewNotes: { type: String },
@@ -39,6 +42,7 @@ const JobSchema: Schema = new Schema({
     questions: [String],
     difficulty: String
   },
+  image: { type: String, default: null },
   savedAt: { type: Date, default: Date.now }
 });
 

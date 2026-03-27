@@ -1,5 +1,6 @@
 import SearchBar from "../components/ui/SearchBar";  
 import Avatar from "../components/ui/Avatar";
+import AvatarImage from "../assets/avatar.jpg";
 
 interface HeaderProps {
   query: string;
@@ -12,9 +13,9 @@ const Header = ({ query, onQueryChange }: HeaderProps) => {
       
       {/* Logo / Title */}
       <div className="flex items-center gap-3">
-        <h2 className="">
+        <h1 className="text-2xl md:text-3xl font-semibold text-[var(--text)]">
           Job Miner
-        </h2>
+        </h1>
       </div>
 
       {/* Search Bar - Centered and flexible */}
@@ -27,7 +28,7 @@ const Header = ({ query, onQueryChange }: HeaderProps) => {
 
       {/* Right Side Actions */}
       <div className="flex items-center gap-4">
-        <Avatar src="https://your-image-url.jpg" size="md"/>
+        <Avatar src={AvatarImage} alt="User Avatar"/>
       </div>
     </header>
   );

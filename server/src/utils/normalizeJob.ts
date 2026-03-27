@@ -1,3 +1,4 @@
+// normalizeJobs.ts
 import { IJob } from '../models/job';
 
 export const normalizeAdzuna = (jobs: any[]): Partial<IJob>[] =>
@@ -9,6 +10,7 @@ export const normalizeAdzuna = (jobs: any[]): Partial<IJob>[] =>
     url: job.redirect_url,
     salary: job.salary_min ? `R${job.salary_min}` : 'N/A',
     source: 'Adzuna' as const,
+    image: null,                    // ← Add this (Adzuna rarely gives logos)
   }));
 
 export const normalizeRemotive = (jobs: any[]): Partial<IJob>[] =>
@@ -20,6 +22,7 @@ export const normalizeRemotive = (jobs: any[]): Partial<IJob>[] =>
     url: job.url,
     salary: job.salary || 'N/A',
     source: 'Remotive' as const,
+    image: job.company_logo || null,   // ← Good
   }));
 
 export const normalizeJSearch = (jobs: any[]): Partial<IJob>[] =>
@@ -31,4 +34,5 @@ export const normalizeJSearch = (jobs: any[]): Partial<IJob>[] =>
     url: job.job_apply_link,
     salary: job.job_salary || 'N/A',
     source: 'JSearch' as const,
+    image: job.employer_logo || null,   // ← Good
   }));
