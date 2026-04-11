@@ -20,13 +20,13 @@ const Avatar = ({ src, alt = "User" }: AvatarProps) => {
     <div className="relative group cursor-pointer">
 
       {/* EXPANDING CONTAINER */}
-      <div className="flex items-center justify-around bg-transparent border border-transparent group-hover:border-[var(--accent)] group-hover:bg-[var(--bg)] group-hover:p-1 rounded-full p-0.25 w-12 group-hover:w-48 transition-all duration-300 overflow-hidden">
+      <div className="flex items-center justify-around bg-transparent border border-transparent group-hover:border-[var(--accent)] group-hover:bg-transparent group-hover:p-1 rounded-full p-0.25 w-12 group-hover:w-48 transition-all duration-300 overflow-hidden">
 
         {/* AVATAR */}
 
-        <div className="w-10 h-10 justify-between rounded-full overflow-hidden flex-shrink-0 border-2 border-[var(--bg-dark)] group-hover:border-[var(--accent)] transition-all duration-300">
+        <div className="w-10 h-10 justify-between rounded-full overflow-hidden flex-shrink-0 border-2 border-transparent group-hover:border-[var(--accent)] transition-all duration-300">
           {src ? (
-            <img src={src} alt={alt} className="w-full h-full object-cover bg-[var(--bg)]" />
+            <img src={src} alt={alt} className="w-full h-full object-cover bg-transparent" />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gray-500 text-white font-bold">
               {alt.charAt(0).toUpperCase()}

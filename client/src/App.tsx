@@ -1,8 +1,7 @@
 import "./index.css";
 import { useState } from "react";
 import Header from "./pages/Header";
-// import Aside from "./pages/Aside"
-// import JobBoard from "./pages/JobBoard"
+import JobBoard from "./pages/JobBoard"
 
 function App() {
   const [query, setQuery] = useState("");
@@ -12,12 +11,7 @@ function App() {
 
       <Header query={query} onQueryChange={setQuery} />
 
-      {/*
-      <div className="body">
-         {<Aside /> }
-         {<JobBoard />}
-      </div> 
-      */}
+      <JobBoard query={query} />
 
     </div>
   );
