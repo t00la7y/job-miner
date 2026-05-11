@@ -9,6 +9,7 @@ server/node_modules/
 .env.production
 client/.env
 server/.env
+server/dist/
 
 # Build outputs
 client/dist/
@@ -27,3 +28,8 @@ Thumbs.db
 
 # Temporary files
 *.tsbuildinfo
+server/dist/
+.env
+*.env.local
+node_modules/
+.continue/
