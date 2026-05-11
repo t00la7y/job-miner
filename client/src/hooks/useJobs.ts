@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { jobsService } from '../services/jobsService';
-import type { Job } from '../types/index';
+import { useState, useEffect, useCallback } from "react";
+import { jobsService } from "../services/jobsService";
+import type { Job } from "../types/index";
 
 interface UseJobsReturn {
   jobs: Job[];
@@ -24,21 +24,32 @@ export const useDebounce = (value: string, delay: number) => {
   return debouncedValue;
 };
 
-export const useJobs = (initialQuery: string = 'developer'): UseJobsReturn => {
+export const useJobs = (initialQuery: string = ""): UseJobsReturn => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [query, setQuery] = useState(initialQuery);
 
   const fetchJobs = useCallback(async (what: string, signal?: AbortSignal) => {
     try {
       setLoading(true);
       setError(null);
-      const data = await jobsService.getJobs(what, 'south africa', signal);
+
+      const trimmed = what?.trim();
+      if (!trimmed) {
+        setJobs([]);
+        setLoading(false);
+        return;
+      }
+
+      const data = await jobsService.getJobs(trimmed, "", signal);
       setJobs(data);
     } catch (err: any) {
-      if (err.name === 'CanceledError' || err.name === 'AbortError') return;
-      setError(err.message);
+      if (err.name === "CanceledError" || err.name === "AbortError") return;
+
+      const errorMessage =
+        err?.message || "An unexpected error occurred while fetching jobs";
+      setError(errorMessage);
+      setJobs([]);
     } finally {
       setLoading(false);
     }
@@ -46,12 +57,20 @@ export const useJobs = (initialQuery: string = 'developer'): UseJobsReturn => {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetchJobs(query, controller.signal);
+    fetchJobs(initialQuery, controller.signal);
     return () => controller.abort();
-  }, [query, fetchJobs]);
+  }, [initialQuery, fetchJobs]);
 
-  const search = (what: string) => setQuery(what);
-  const refetch = () => fetchJobs(query);
+  const search = useCallback(
+    (what: string) => {
+      fetchJobs(what);
+    },
+    [fetchJobs],
+  );
+
+  const refetch = useCallback(() => {
+    fetchJobs(initialQuery);
+  }, [fetchJobs, initialQuery]);
 
   return { jobs, loading, error, search, refetch };
 };

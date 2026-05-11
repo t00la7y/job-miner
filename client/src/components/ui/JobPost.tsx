@@ -14,9 +14,9 @@ const JobPost = ({ job, onClose }: JobPostProps) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-(--bg-light)">
       {/* Header with Back Button */}
-      <div className="border-b border-gray-200 p-4 flex items-center justify-between">
+      <div className="border-b border-(--bg) p-4 flex items-center justify-between">
         <button
           onClick={onClose}
           className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors"
@@ -39,7 +39,7 @@ const JobPost = ({ job, onClose }: JobPostProps) => {
         {/* Company Header */}
         <div className="space-y-4">
           <div className="flex items-start gap-4">
-            <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center flex-shrink-0">
+            <div className="w-16 h-16 rounded-lg bg-linear-to-br from-blue-50 to-indigo-50 flex items-center justify-center shrink-0">
               {job.image ? (
                 <img
                   src={job.image}
@@ -58,7 +58,7 @@ const JobPost = ({ job, onClose }: JobPostProps) => {
             <div className="flex-1">
               <p className="text-sm text-gray-500 uppercase tracking-wider">{job.company}</p>
               <h1 className="text-2xl font-bold text-gray-900 mt-1">{job.title}</h1>
-              <p className="text-gray-600 mt-2 flex items-center gap-1">
+              <p className="text-(--text) mt-2 flex items-center gap-1">
                 📍 {job.location}
               </p>
             </div>
@@ -84,8 +84,8 @@ const JobPost = ({ job, onClose }: JobPostProps) => {
         {/* Description */}
         {job.description && (
           <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">About This Job</h2>
-            <div className="prose prose-sm max-w-none text-gray-700">
+            <h2 className="text-xl font-bold text-(--text-dark) mb-3">About This Job</h2>
+            <div className="prose prose-sm max-w-none text-(--text)">
               <p className="whitespace-pre-wrap">{job.description}</p>
             </div>
           </div>
@@ -94,8 +94,8 @@ const JobPost = ({ job, onClose }: JobPostProps) => {
         {/* Requirements Section (if available) */}
         {job.requirements && (
           <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">Requirements</h2>
-            <ul className="space-y-2 text-gray-700">
+            <h2 className="text-xl font-bold text-(--text) mb-3">Requirements</h2>
+            <ul className="space-y-2 text-(--text)">
               {(Array.isArray(job.requirements)
                 ? job.requirements
                 : job.requirements.split("\n")
@@ -135,7 +135,7 @@ const JobPost = ({ job, onClose }: JobPostProps) => {
       </div>
 
       {/* Footer with CTA Button */}
-      <div className="border-t border-gray-200 p-4 sticky bottom-0 bg-white">
+      <div className="border-t border-(--bg) p-4 sticky bottom-0 bg-(--bg-light)">
         <a
           href={job.url}
           target="_blank"

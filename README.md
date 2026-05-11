@@ -22,7 +22,7 @@ job-miner/
 ├── client/                     # React + Vite + Tailwind — deployed to Vercel
 │   ├── Dockerfile              # Multi-stage: build React, serve with Nginx
 │   ├── .env                    # VITE_API_URL only — no secrets (never committed)
-│   ├── .env.example            # VITE_API_URL=http://localhost:5000
+│   ├── .env.example            # VITE_API_URL=http://localhost:5174
 │   ├── index.html
 │   ├── vite.config.js
 │   ├── tailwind.config.js
@@ -83,8 +83,8 @@ Three containers, one command to start everything:
 
 | Container | Image | Port |
 |-----------|-------|------|
-| `client` | Built from `client/Dockerfile` | 3000 |
-| `server` | Built from `server/Dockerfile` | 5000 |
+| `client` | Built from `client/Dockerfile` | 5174|
+| `server` | Built from `server/Dockerfile` | 5174 |
 | `mongo` | Official `mongo:7` image | 27017 |
 
 ---
@@ -105,7 +105,7 @@ WORKDIR /app
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app .
 ENV NODE_ENV=production
-ENV PORT=5000
+ENV PORT=5174
 USER node
 EXPOSE 5000
 CMD ["node", "server.js"]

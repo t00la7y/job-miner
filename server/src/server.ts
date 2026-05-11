@@ -2,16 +2,20 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
+import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
 import connectDB from "./config/db";
 import jobsRouter from "./routes/jobs";
+import authRouter from "./routes/auth";
+import chatRouter from "./routes/chat";
 import errorHandler from "./middleware/errorhandler";
+import { initializeQdrantCollection } from "./services/qdrantClient";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = Number(process.env.PORT) || 5001;
 
 // Rate limiting - DDoS Prevention
 // General limiter: 100 requests per 15 minutes
@@ -55,9 +59,21 @@ app.use(
 app.use(compression());
 
 // CORS - Fixed (was configured twice)
+const allowedOrigins = [
+  process.env.CORS_ORIGIN,
+  "http://localhost:5173",
+  "http://localhost:5174",
+].filter(Boolean) as string[];
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS origin not allowed"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -66,6 +82,7 @@ app.use(
 
 // JSON Parser
 app.use(express.json());
+app.use(cookieParser());
 
 // Apply general rate limiter to all routes
 app.use(generalLimiter);
@@ -76,12 +93,17 @@ app.use((req, res, next) => {
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("X-XSS-Protection", "1; mode=block");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-  res.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+  res.setHeader(
+    "Permissions-Policy",
+    "geolocation=(), microphone=(), camera=()",
+  );
   next();
 });
 
 // Routes
+app.use("/api/auth", authRouter);
 app.use("/api/jobs", searchLimiter, jobsRouter);
+app.use("/api/chat", chatRouter);
 
 // Health check endpoint
 app.get("/health", (req, res) => {
@@ -93,10 +115,46 @@ app.use(errorHandler);
 
 const startServer = async () => {
   await connectDB();
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`🔒 Security features: HTTPS headers, Rate limiting, DDoS prevention, CORS validated`);
-  });
+  await initializeQdrantCollection();
+
+  const basePort = Number(process.env.PORT) || PORT;
+  let currentPort = basePort;
+  const maxAttempts = 5;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const server = app.listen(currentPort, () => {
+          console.log(`🚀 Server running on port ${currentPort}`);
+          console.log(
+            `🔒 Security features: HTTPS headers, Rate limiting, DDoS prevention, CORS validated`,
+          );
+          resolve();
+        });
+
+        server.on("error", (error) => {
+          reject(error);
+        });
+      });
+      return;
+    } catch (error: any) {
+      if (error?.code === "EADDRINUSE") {
+        console.warn(
+          `Port ${currentPort} is in use, trying ${currentPort + 1}`,
+        );
+        currentPort += 1;
+        continue;
+      }
+
+      console.error("Server startup error:", error);
+      process.exit(1);
+    }
+  }
+
+  console.error(
+    `Unable to bind server after ${maxAttempts} attempts starting at port ${basePort}.`,
+  );
+  process.exit(1);
 };
 
 startServer();

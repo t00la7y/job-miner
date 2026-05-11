@@ -1,0 +1,25 @@
+name: Local Config
+version: 1.0.0
+schema: v1
+models:
+  - name: Qwen2.5 3B
+    provider: ollama
+    model: qwen2.5:3b
+    roles:
+      - chat
+      - edit
+      - apply
+      - autocomplete
+
+  - name: Nomic Embed
+    provider: ollama
+    model: nomic-embed-text:latest
+    roles:
+      - embed
+
+  - name: Q-Custom
+    provider: ollama
+    model: q-custom:latest
+    roles:
+      - chat
+      - edit

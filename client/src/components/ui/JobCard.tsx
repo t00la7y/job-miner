@@ -1,72 +1,169 @@
-// components/ui/JobCard.tsx
-import type { Job } from "../../types";
-import JobImage from "./JobImage";
+import { useState } from "react";
+import { Heart, MapPin, Clock } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export type PosterType = "company" | "freelancer" | "recruiter";
+export type WorkMode = "Remote" | "Hybrid" | "On-site";
+export type JobType =
+  | "Full-time"
+  | "Part-time"
+  | "Freelance"
+  | "Contract"
+  | "Internship";
+
+export interface Job {
+  id: string;
+  title: string;
+  posterType: PosterType;
+  // Company / recruiter fields
+  companyName?: string;
+  companyLogoUrl?: string;
+  // Freelancer fields
+  posterName?: string;
+  posterInitials?: string;
+  // Shared
+  location: string;
+  workMode: WorkMode;
+  jobType: JobType;
+  experienceLevel: "Entry-level" | "Graduate" | "Mid-level" | "Senior";
+  salaryLabel: string;
+  postedAt: string; // human-readable, e.g. "2 days ago"
+  tags?: string[];
+  url?: string;
+  source?: string;
+}
 
 interface JobCardProps {
   job: Job;
+  selected?: boolean;
   onClick?: () => void;
 }
 
-const JobCard = ({ job, onClick }: JobCardProps) => {
+const WORK_MODE_STYLES: Record<WorkMode, string> = {
+  Remote: "bg-teal-50 text-teal-800 border-teal-200",
+  Hybrid: "bg-amber-50 text-amber-800 border-amber-200",
+  "On-site": "bg-gray-100 text-gray-600 border-gray-200",
+};
+
+const JOB_TYPE_STYLES: Record<JobType, string> = {
+  "Full-time": "bg-gray-100 text-gray-600 border-gray-200",
+  "Part-time": "bg-gray-100 text-gray-600 border-gray-200",
+  Freelance: "bg-teal-50 text-teal-800 border-teal-200",
+  Contract: "bg-amber-50 text-amber-800 border-amber-200",
+  Internship: "bg-purple-50 text-purple-800 border-purple-200",
+};
+
+function Badge({ label, style }: { label: string; style: string }) {
   return (
-    <div 
-      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer p-4"
-      onClick={onClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") onClick?.();
-      }}
-    >
-      {/* Header with Company Logo */}
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex-1">
-          <p className="text-xs text-gray-500 uppercase tracking-wider">{job.company}</p>
-        </div>
-        <JobImage 
-          imageUrl={job.image} 
-          companyName={job.company}
-          className="w-12 h-12 rounded flex-shrink-0"
-        />
-      </div>
-
-      {/* Job Title */}
-      <h3 className="font-semibold text-lg leading-tight line-clamp-2 mb-3 text-gray-900">
-        {job.title}
-      </h3>
-
-      {/* Location */}
-      <div className="mb-4">
-        <p className="text-gray-600 text-sm">📍 {job.location}</p>
-      </div>
-
-      {/* Job Description (if available) */}
-      {job.description && (
-        <p className="text-gray-600 text-sm line-clamp-2 mb-4">
-          {job.description}
-        </p>
+    <span
+      className={cn(
+        "inline-block text-[11px] font-medium px-2 py-0.5 rounded-full border",
+        style,
       )}
+    >
+      {label}
+    </span>
+  );
+}
 
-      {/* Action Buttons */}
-      <div className="flex gap-2 pt-3 border-t border-gray-200">
-        <a
-          href={job.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-center font-medium text-sm transition-colors"
+export function JobCard({ job, selected = false, onClick }: JobCardProps) {
+  const [saved, setSaved] = useState(false);
+  const isFreelancerPost = job.posterType === "freelancer";
+
+  return (
+    <div
+      onClick={onClick}
+      className={cn(
+        "bg-white rounded-xl border p-4 cursor-pointer transition-all duration-150",
+        selected
+          ? "border-gray-900 border-[1.5px] shadow-none"
+          : "border-gray-200 hover:border-gray-400",
+      )}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex gap-3 items-start min-w-0">
+          {/* Logo / Avatar */}
+          {isFreelancerPost ? (
+            <div className="w-8 h-8 rounded-full bg-teal-50 border border-teal-200 flex items-center justify-center text-[11px] font-semibold text-teal-800 flex-shrink-0">
+              {job.posterInitials ?? "?"}
+            </div>
+          ) : (
+            <div className="w-8 h-8 rounded-md bg-gray-100 border border-gray-200 flex-shrink-0 overflow-hidden">
+              {job.companyLogoUrl ? (
+                <img
+                  src={job.companyLogoUrl}
+                  alt={job.companyName}
+                  className="w-full h-full object-contain"
+                />
+              ) : null}
+            </div>
+          )}
+
+          {/* Title & poster */}
+          <div className="min-w-0">
+            <p className="text-[13px] font-medium text-gray-900 leading-snug truncate">
+              {job.title}
+            </p>
+            <p className="text-[12px] text-gray-500 mt-0.5">
+              {isFreelancerPost
+                ? `Posted by ${job.posterName ?? "Freelancer"}`
+                : job.companyName}{" "}
+              ·{" "}
+              <span className="inline-flex items-center gap-0.5">
+                <MapPin size={10} className="inline" />
+                {job.location}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        {/* Save button */}
+        <button
+          aria-label={saved ? "Unsave job" : "Save job"}
+          onClick={(e) => {
+            e.stopPropagation();
+            setSaved((s) => !s);
+          }}
+          className={cn(
+            "flex-shrink-0 p-1.5 rounded-md border transition-colors",
+            saved
+              ? "border-teal-200 bg-teal-50 text-teal-700"
+              : "border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600",
+          )}
         >
-          View Job
-        </a>
-        <button 
-          className="flex-1 border border-gray-300 hover:bg-gray-50 py-2 rounded text-sm font-medium transition-colors"
-          onClick={(e) => e.stopPropagation()}
-        >
-          Save
+          <Heart size={14} fill={saved ? "currentColor" : "none"} />
         </button>
+      </div>
+
+      {/* Badges */}
+      <div className="flex flex-wrap gap-1.5 mt-3">
+        <Badge label={job.workMode} style={WORK_MODE_STYLES[job.workMode]} />
+        <Badge label={job.jobType} style={JOB_TYPE_STYLES[job.jobType]} />
+        {job.experienceLevel && (
+          <Badge
+            label={job.experienceLevel}
+            style="bg-gray-100 text-gray-600 border-gray-200"
+          />
+        )}
+        {job.tags?.map((tag) => (
+          <Badge
+            key={tag}
+            label={tag}
+            style="bg-gray-100 text-gray-500 border-gray-200"
+          />
+        ))}
+      </div>
+
+      {/* Footer */}
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+        <span className="text-[12px] text-gray-600 font-medium">
+          {job.salaryLabel}
+        </span>
+        <span className="text-[11px] text-gray-400 flex items-center gap-1">
+          <Clock size={10} />
+          {job.postedAt}
+        </span>
       </div>
     </div>
   );
-};
-
-export default JobCard;
+}

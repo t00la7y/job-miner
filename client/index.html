@@ -1,8 +1,23 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./src/assets/job-miner-app-icon.svg" />
+    <script>
+      (function () {
+        try {
+          var savedTheme = localStorage.getItem("job-miner-theme");
+          var theme = savedTheme || "dark";
+          document.documentElement.setAttribute("data-theme", theme);
+        } catch (e) {
+          console.warn("Theme initialization failed", e);
+        }
+      })();
+    </script>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="./src/assets/job-miner-app-icon.svg"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Job Miner</title>
   </head>

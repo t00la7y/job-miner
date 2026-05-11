@@ -1,23 +1,39 @@
 @import "tailwindcss";
 
+:root {
+  /* Design tokens from wireframes */
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f8f9fa;
+  --color-text-primary: #000000;
+  --color-text-secondary: #6c757d;
+  --color-text-tertiary: #adb5bd;
+  --color-border-primary: #000000;
+  --color-border-secondary: #dee2e6;
+  --color-border-tertiary: #e9ecef;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
 :root[data-theme="dark"] {
   --accent: hsl(220, 80%, 60%);
   --bg: hsl(0, 0%, 30%);
   --bg-light: hsl(0, 0%, 45%);
   --bg-dark: hsl(0, 0%, 15%);
   --text: hsl(0, 0%, 80%);
-  --text-light: hsl(0, 0%, 80%);
+  --text-light: hsl(0, 0%, 90%);
   --text-dark: hsl(0, 0%, 10%);
 }
 
 :root[data-theme="light"] {
   --accent: hsl(220, 80%, 60%);
-  --bg:hsl(0, 0%, 70%);
+  --bg: hsl(0, 0%, 70%);
   --bg-light: hsl(0, 0%, 85%);
   --bg-dark: hsl(0, 0%, 25%);
   --text: hsl(0, 0%, 20%);
-  --text-light: hsl(0, 0%, 90%);
-  --text-dark: hsl(0, 0%, 10%);
+  --text-light: hsl(0, 0%, 10%);
+  --text-dark: hsl(0, 0%, 40%);
 }
 
 body {
@@ -25,30 +41,81 @@ body {
   padding-top: 0;
   height: 100vh;
   width: 100%;
+  font-family: var(--font-sans);
 }
 
 #root {
   width: 100%;
   height: 100%;
-  padding: 1.5rem 0;
   display: flex;
   flex-direction: column;
   background: var(--bg);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+.fade-scroll {
+  position: relative;
+  overflow: hidden;
+}
+
+.fade-scroll::before,
+.fade-scroll::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4rem;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.fade-scroll::before {
+  top: 0;
+  background: linear-gradient(
+    180deg,
+    var(--bg) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.fade-scroll::after {
+  bottom: 0;
+  background: linear-gradient(0deg, var(--bg) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.fade-scroll > * {
+  max-height: 100%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 12%,
+    black 88%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 12%,
+    black 88%,
+    transparent 100%
+  );
+}
+
 .header {
   width: 100%;
-  height: 10%;
-  padding: 0.75rem 2rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  height: 20%;
+  padding: 0.5rem 1rem;
 }
 
 .body {
   width: 100%;
-  height: 90%;
+  min-height: 70%;
   display: flex;
   flex-direction: row;
   gap: 1.5rem;
@@ -57,7 +124,7 @@ body {
 .app-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  /* gap: 1rem; */
   height: 100%;
   width: 100%;
 }

@@ -19,9 +19,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full px-4 py-2 bg-[var(--bg-light)] border border-[var(--bg-light)] rounded-2xl 
+        className="w-full px-4 py-2 bg-(--bg-light) border border-(--bg-light) rounded-2xl 
                    text-lg shadow-sm 
-                   focus:outline-none focus:border-none focus:ring-1 focus:ring-[var(--accent)]
+                   focus:outline-none focus:border-none focus:ring-1 focus:ring-(--accent)
                    transition-all duration-200 placeholder:text-gray-400"
         aria-label="Search jobs"
       />

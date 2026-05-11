@@ -1,6 +1,4 @@
-
-
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IJob extends Document {
   title: string;
@@ -9,7 +7,17 @@ export interface IJob extends Document {
   description: string;
   url: string;
   salary: string;
-  source: 'Adzuna' | 'Remotive' | 'JSearch';
+  source:
+    | "Adzuna"
+    | "Remotive"
+    | "JSearch"
+    | "ArbeitNow"
+    | "Greenhouse"
+    | "Lever"
+    | "Ashby"
+    | "Workable"
+    | "Recruitee"
+    | "Personio";
   applied: boolean;
   interviewNotes?: string;
   geminiData?: {
@@ -18,7 +26,7 @@ export interface IJob extends Document {
     questions: string[];
     difficulty: string;
   };
-  image?: string | null;          
+  image?: string | null;
   savedAt: Date;
 }
 
@@ -28,11 +36,22 @@ const JobSchema: Schema = new Schema({
   location: { type: String, required: true },
   description: { type: String, required: true },
   url: { type: String, required: true, unique: true },
-  salary: { type: String, default: 'N/A' },
+  salary: { type: String, default: "N/A" },
   source: {
     type: String,
-    enum: ['Adzuna', 'Remotive', 'JSearch'],
-    required: true
+    enum: [
+      "Adzuna",
+      "Remotive",
+      "JSearch",
+      "ArbeitNow",
+      "Greenhouse",
+      "Lever",
+      "Ashby",
+      "Workable",
+      "Recruitee",
+      "Personio",
+    ],
+    required: true,
   },
   applied: { type: Boolean, default: false },
   interviewNotes: { type: String },
@@ -40,10 +59,10 @@ const JobSchema: Schema = new Schema({
     jobTitle: String,
     company: String,
     questions: [String],
-    difficulty: String
+    difficulty: String,
   },
   image: { type: String, default: null },
-  savedAt: { type: Date, default: Date.now }
+  savedAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.model<IJob>('Job', JobSchema);
+export default mongoose.model<IJob>("Job", JobSchema);
